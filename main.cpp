@@ -7,96 +7,96 @@
 #include <sys/stat.h>
 using namespace std;
 
-
 //	SAMOCHOD
-class Samochod
-{
-    //int		poziomPaliwa;
-    //bool		stanTechniczny;
-public:
-    void		ustawPoziomPaliwa(int poziomPaliwa){this->poziomPaliwa = poziomPaliwa;}
-    int		dajPoziomPaliwa(){return poziomPaliwa;}
-    void		ustawStanTechniczny(bool stanTechniczny){this->stanTechniczny = stanTechniczny;}
-    bool		dajStanTechniczy(){return stanTechniczny;}
+class Samochod {
+    public:
+        void ustawPoziomPaliwa(int poziomPaliwa) {
+            if (poziomPaliwa < 0)
+                return;
 
-    void	ustaw(int, bool);
+            this->poziomPaliwa = poziomPaliwa;
+        }
 
-    Samochod(int, bool);
-    Samochod();
-    ~Samochod();
-//int		Samochod(poziomPaliwa, stanTechniczny);
+        int dajPoziomPaliwa() {
+            return poziomPaliwa;
+        }
 
-    void	pokaz();
+        void ustawStanTechniczny(bool stanTechniczny) {
+            this->stanTechniczny = stanTechniczny;
+        }
 
-private:
-    int		poziomPaliwa;
-    bool	stanTechniczny;
+        bool dajStanTechniczy() {
+            return stanTechniczny;
+        }
 
+        Samochod(int poziomPaliwa, bool stanTechniczny) {
+            ustawPoziomPaliwa(poziomPaliwa);
+            ustawStanTechniczny(stanTechniczny);
+        }
+
+        ~Samochod() {}
+
+        void pokaz() {
+            cout << "Poziom paliwa: " << dajPoziomPaliwa() << endl;
+            cout << "Stan techniczny: " << dajStanTechniczy() << endl;
+        }
+
+    private:
+        int	poziomPaliwa;
+        bool stanTechniczny;
 };
 
-void Samochod::ustaw(int poziomPaliwa, bool stanTechniczny){
-    this->poziomPaliwa = poziomPaliwa;
-    this->stanTechniczny = stanTechniczny;
-};
-
-Samochod::Samochod(){
-    this->poziomPaliwa = 0;
-    this->stanTechniczny = false;
-};
-
-Samochod::~Samochod(){
-    std::cout << "Samochod destroyed\n";
-};
-
-void Samochod::pokaz(){
-    std::cout << "Poziom paliwa samochodu: " << this->poziomPaliwa << "\nStan techniczny: " << this->stanTechniczny << "\n";
-};
-/*
 //	KIEROWCA
+class Kierowca {
+    public:
+        bool czyMogeJechac(Samochod &s) {
+            if (!s.dajStanTechniczy() || s.dajPoziomPaliwa() < 10)
+                return false;
+            else
+                return true;
+        }
 
-class	Kierowca
-{
- 		bool	czyMogeJechac;
- 		int		paliwo = Samochod& samochod1.poziomPaliwa;
- 		bool	stan = Samochod& samochod1.stanTechniczny;
-
- 		if (paliwo >= 10 && stan = true)
-		   		czyMogeJechac = true;
- 		else
- 				czyMogeJechac = false;
-
- 		public:
-			   bool		czyMogeJechac(){return czyMogeJechac;}
-
-
-		Kierowca();
-		~Kierowca();
-
-		void 	pokazStan();
-
+		Kierowca() {}
+		~Kierowca() {}
 };
 
-void Kierowca::pokazStan() {
-	 std::cout << "Czy  mozna jechac?: \t" <<  this->czyMogeJechac << "\n";
+// MECHANIK
+class Mechanik {
+    public:
+        void napraw(Samochod &s) {
+            s.ustawStanTechniczny(true);
+            s.ustawPoziomPaliwa(60);
+        }
+
+        Mechanik() {}
+        ~Mechanik() {}
 };
-*/
 
-
-
-
-
+void sprawdzenie(Samochod &samochod, Mechanik &mechanik, Kierowca &kierowca) {
+    if (!kierowca.czyMogeJechac(samochod)) {
+        cout << "Stan samochodu przed naprawa: " << endl;
+        samochod.pokaz();
+        mechanik.napraw(samochod);
+        cout << "Stan samochodu po naprawie: " << endl;
+        samochod.pokaz();
+    }
+}
 
 int main(){
 
-    Samochod samochod1;
-    samochod1.ustawPoziomPaliwa(9);
-    samochod1.ustawStanTechniczny(false);
-    samochod1.pokaz();
+    Samochod samochod1(9, false);
 
-//	Kierowca kierowca1;
-//	kierowca1.pokazStan();
+    Samochod samochod2(30, true);
 
+    Mechanik zdzichu;
 
+    Kierowca krzychu;
+
+    cout << "Samochod nr 1: " << endl;
+    sprawdzenie(samochod1, zdzichu, krzychu);
+
+    cout << "Samochod nr 2: " << endl;
+    sprawdzenie(samochod2, zdzichu, krzychu);
 
     system("pause");
 
